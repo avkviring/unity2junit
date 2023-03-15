@@ -29,4 +29,12 @@ pub struct TestCase {
     pub fullname: String,
     pub result: String,
     pub output: Option<String>,
+    pub failure: Option<Failure>,
+}
+
+#[derive(Default, Debug, Serialize, Deserialize, PartialEq)]
+pub struct Failure {
+    pub message: Option<String>,
+    #[serde(rename = "stack-trace")]
+    pub stacktrace: Option<String>,
 }

@@ -22,6 +22,7 @@ impl From<TestSuite> for junit_report::TestSuite {
 
 impl From<TestCase> for junit_report::TestCase {
     fn from(source: TestCase) -> Self {
+        let failure = source.failure.unwrap_or_default();
         junit_report::TestCase {
             name: source.name.into(),
             time: junit_report::Duration::default(),
@@ -30,13 +31,13 @@ impl From<TestCase> for junit_report::TestCase {
             } else {
                 junit_report::TestResult::Error {
                     type_: source.result,
-                    message: source.output.unwrap_or_default(),
+                    message: failure.message.unwrap_or_default(),
                 }
             },
             classname: Some(source.classname),
             filepath: None,
             system_out: None,
-            system_err: None,
+            system_err: failure.stacktrace,
         }
     }
 }
