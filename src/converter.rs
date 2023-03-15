@@ -23,17 +23,18 @@ impl From<TestSuite> for junit_report::TestSuite {
 impl From<TestCase> for junit_report::TestCase {
     fn from(source: TestCase) -> Self {
         let failure = source.failure.unwrap_or_default();
+        let result = match source.result.as_str() {
+            "Passed" => junit_report::TestResult::Success,
+            "Skipped" => junit_report::TestResult::Skipped,
+            _ => junit_report::TestResult::Error {
+                type_: source.result,
+                message: failure.message.unwrap_or_default(),
+            },
+        };
         junit_report::TestCase {
             name: source.name.into(),
             time: junit_report::Duration::default(),
-            result: if source.result == "Passed" {
-                junit_report::TestResult::Success
-            } else {
-                junit_report::TestResult::Error {
-                    type_: source.result,
-                    message: failure.message.unwrap_or_default(),
-                }
-            },
+            result,
             classname: Some(source.classname),
             filepath: None,
             system_out: None,
