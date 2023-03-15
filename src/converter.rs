@@ -6,7 +6,7 @@ use crate::unity::{Failure, SuiteOrCase, TestCase, TestSuite};
 impl From<TestSuite> for junit_report::TestSuite {
     fn from(source: TestSuite) -> Self {
         let mut builder = junit_report::TestSuiteBuilder::new(&source.name.unwrap_or_default());
-        for item in source.results.items {
+        for item in source.results.unwrap_or_default().items {
             match item {
                 SuiteOrCase::TestSuite(suite) => {
                     let converted: junit_report::TestSuite = suite.into();
@@ -20,7 +20,7 @@ impl From<TestSuite> for junit_report::TestSuite {
                 }
             };
         }
-        return builder.build();
+        builder.build()
     }
 }
 

@@ -14,10 +14,10 @@ pub struct TestSuite {
     pub result: Option<String>,
     pub success: Option<String>,
     pub asserts: Option<u64>,
-    pub results: Results,
+    pub results: Option<Results>,
     pub reason: Option<Reason>,
 }
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Default, Debug, Serialize, Deserialize, PartialEq)]
 pub struct Results {
     #[serde(rename = "$value")]
     pub items: Vec<SuiteOrCase>,
