@@ -27,18 +27,18 @@ pub fn convert(in_file: PathBuf, out_file: PathBuf) {
     let src = read_to_string(in_file).unwrap();
     let item: TestResults = from_str(&src).unwrap();
 
-    let result = match item.test_suite {
+    match item.test_suite {
         None => {
             panic!("Root test suite not defined")
         }
-        Some(suite) => {
-            let report = ReportBuilder::new()
-                .add_testsuite(From::from(suite))
-                .build();
+        Some(suites) => {
+            let mut report_builder = ReportBuilder::new();
+            report_builder.add_testsuites(suites.into_iter().map(Into::into));
+            report_builder.build();
             let mut out = File::create(out_file).unwrap();
-            report.write_xml(out).unwrap();
+            report_builder.build().write_xml(out).unwrap();
         }
-    };
+    }
 }
 
 #[cfg(test)]
@@ -52,20 +52,10 @@ pub mod test {
 
     use crate::unity::{TestResults, TestSuite};
 
-    // #[test]
-    // fn test() {
-    //     let src = read_to_string("test.xml").unwrap();
-    //     let item: TestResults = serde_xml_rs::from_str(&src).unwrap();
-    //
-    //     let result = match item.test_suite {
-    //         None => None,
-    //         Some(suite) => Some(
-    //             ReportBuilder::new()
-    //                 .add_testsuite(From::from(suite))
-    //                 .build(),
-    //         ),
-    //     };
-    //
-    //     println!("{:#?}", result);
-    // }
+    #[test]
+    fn test() {
+        let src = read_to_string("test.xml").unwrap();
+        let item: TestResults = serde_xml_rs::from_str(&src).unwrap();
+        println!("{:#?}", item);
+    }
 }
