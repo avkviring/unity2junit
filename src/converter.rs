@@ -1,20 +1,22 @@
-use std::fmt::format;
-use std::time::Duration;
+use crate::unity::{TestCase, TestItem, TestSuite};
 
-use crate::unity::{TestCase, TestSuite};
 
 impl From<TestSuite> for junit_report::TestSuite {
     fn from(source: TestSuite) -> Self {
         let mut builder = junit_report::TestSuiteBuilder::new(source.fullname.as_str());
-        for item in source.test_suite.unwrap_or_default() {
-            let converted: junit_report::TestSuite = item.into();
-            for test_case in converted.testcases {
-                builder.add_testcase(test_case);
+        for item in source.items {
+            match item {
+                TestItem::TestSuite(item) => {
+                    let converted: junit_report::TestSuite = item.into();
+                    for test_case in converted.testcases {
+                        builder.add_testcase(test_case);
+                    }
+                }
+                TestItem::TestCase(item) => {
+                    builder.add_testcase(item.into());
+                }
+                _ => {}
             }
-        }
-        for item in source.test_case.unwrap_or_default() {
-            let converted = item.into();
-            builder.add_testcase(converted);
         }
         builder.build()
     }
