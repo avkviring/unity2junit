@@ -48,7 +48,7 @@ pub mod test {
 
     #[test]
     fn test() {
-        let src = read_to_string("editmode-results.xml").unwrap();
+        let src = read_to_string("test.xml").unwrap();
         let item: TestResults = from_str(&src).unwrap();
 
         let mut report_builder = ReportBuilder::new();
