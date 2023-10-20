@@ -12,9 +12,20 @@ pub enum TestItem {
     TestSuite(TestSuite),
     TestCase(TestCase),
     Properties(Properties),
-    Failure(Failure)
+    Failure(Failure),
+    Reason(Reason),
+    Output(Output)
 }
 
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub struct Output {
+
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub struct Reason {
+
+}
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct Properties {
